@@ -91,8 +91,16 @@
             else if (urlLower.includes(".java") || urlLower.includes(".cs") || urlLower.includes(".js") || urlLower.includes(".html")) tipo = "codigo";
 
             if (tipo === "pdf") {
-                contenedorDinamico.innerHTML = `<iframe src="${archivo}"></iframe>`;
-                descripcionVisor.innerText = "Documento PDF.";
+    // 1. Convertimos la ruta relativa a una URL absoluta (Google Viewer la necesita para ubicar el archivo)
+    const rutaAbsoluta = new URL(archivo, window.location.href).href;
+    
+    // 2. Pasamos la URL absoluta a través del visor de Google Docs
+    const urlGoogleViewer = `https://docs.google.com/gview?url=${encodeURIComponent(rutaAbsoluta)}&embedded=true`;
+    
+    // 3. Inyectamos el iframe modificado
+    contenedorDinamico.innerHTML = `<iframe src="${urlGoogleViewer}" style="width: 100%; height: 75vh; border: none; border-radius: 8px;"></iframe>`;
+    descripcionVisor.innerText = "Documento PDF (Optimizado para móviles).";
+}
             } else if (tipo === "img") {
                 contenedorDinamico.innerHTML = `<img src="${archivo}" alt="${titulo}">`;
                 descripcionVisor.innerText = "Esquema Visual.";
