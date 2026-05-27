@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor de Contenido - PotroGuias</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        #contenido-dinamico { width: 100%; display: flex; justify-content: center; }
+        #contenido-dinamico iframe { width: 100%; height: 75vh; border: none; border-radius: 8px; background: white; }
+        #contenido-dinamico img { max-width: 100%; max-height: 75vh; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.5); object-fit: contain;}
+        #contenido-dinamico pre { width: 100%; text-align: left; background: #1f2937; padding: 20px; border-radius: 8px; overflow: auto; color: #f3f4f6; border: 1px solid #374151; font-family: monospace; max-height: 75vh;}
+        
+        .comentarios-section { width: 100%; max-width: 900px; margin: 30px auto; text-align: left; padding: 30px; }
+        .comentario-item { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 10px; margin-bottom: 15px; }
+        .comentario-autor { color: #4ade80; font-weight: bold; font-size: 0.95rem; margin-bottom: 5px; }
+        .comentario-fecha { color: #6b7280; font-size: 0.8rem; margin-left: 10px; font-weight: normal; }
+        .comentario-texto { color: #e5e7eb; font-size: 0.95rem; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+    <nav class="glass-panel">
+        <h1>PotrosGuias - Modo Lectura</h1>
+        <a href="#" onclick="window.close()" style="color: #ef4444; font-weight: bold; text-decoration: none;">Cerrar Ventana ✖</a>
+    </nav>
+
+    <div class="container" style="text-align: center; max-width: 900px; margin: 0 auto; padding-top: 30px;">
+        <h2 id="titulo-visor" style="color: #4ade80; margin-bottom: 10px; font-size: 2rem;">Cargando contenido...</h2>
+        <p id="descripcion-visor" style="color: #9ca3af; margin-bottom: 20px;">Visualizando material de estudio.</p>
+
+        <div class="glass-panel" style="padding: 20px; min-height: 500px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+            <div id="contenido-dinamico" style="margin-bottom: 20px; width: 100%;"></div>
+            <a href="#" id="btn-descargar" class="btn" style="text-decoration: none; display: inline-block;">Descargar Material ↓</a>
+        </div>
+
+        <div class="glass-panel comentarios-section">
+            <h3 style="color: #4ade80; margin-bottom: 20px; font-size: 1.4rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">💬 Comentarios de la Comunidad</h3>
+            <div id="lista-comentarios" style="margin-bottom: 25px;"></div>
+
+            <form id="form-comentario" style="display: flex; flex-direction: column; gap: 15px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="input-autor">Tu Nombre / Apodo:</label>
+                    <input type="text" id="input-autor" class="form-input" required placeholder="Ej. Potro_Ingeniería">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="textarea-comentario">Tu Comentario:</label>
+                    <textarea id="textarea-comentario" class="form-input" style="min-height: 80px; resize: vertical;" required placeholder="Escribe tu duda..."></textarea>
+                </div>
+                <button type="submit" class="btn-submit" style="width: auto; align-self: flex-end; padding: 10px 25px;">Publicar Comentario</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            if(localStorage.getItem('temaPreferido') === 'oro') {
+                document.body.classList.add('tema-oro');
+            }
+
+            const params = new URLSearchParams(window.location.search);
+            const archivo = params.get("archivo");
+            const titulo = params.get("titulo") || "Apunte_Anonimo";
+
+            const tituloVisor = document.getElementById("titulo-visor");
+            const descripcionVisor = document.getElementById("descripcion-visor");
+            const contenedorDinamico = document.getElementById("contenido-dinamico");
+            const btnDescargar = document.getElementById("btn-descargar");
+            
+            const listaComentarios = document.getElementById("lista-comentarios");
+            const formComentario = document.getElementById("form-comentario");
+            const inputAutor = document.getElementById("input-autor");
+            const textareaComentario = document.getElementById("textarea-comentario");
+
+            const STORAGE_KEY = `comentarios_${titulo.replace(/\s+/g, '_')}`;
+
+            if (!archivo) {
+                tituloVisor.innerText = "Error: Archivo no encontrado";
+                return;
+            }
+
+            tituloVisor.innerText = titulo;
+            btnDescargar.href = archivo;
+            btnDescargar.setAttribute("download", titulo);
+
+            let tipo = "desconocido";
+            const urlLower = archivo.toLowerCase();
+            
+            if (urlLower.includes(".pdf")) tipo = "pdf";
+            else if (urlLower.includes("unsplash.com") || urlLower.match(/\.(jpeg|jpg|gif|png|webp)/)) tipo = "img";
+            else if (urlLower.includes(".java") || urlLower.includes(".cs") || urlLower.includes(".js") || urlLower.includes(".html")) tipo = "codigo";
+
+            if (tipo === "pdf") {
+                contenedorDinamico.innerHTML = `<iframe src="${archivo}"></iframe>`;
+                descripcionVisor.innerText = "Documento PDF.";
+            } else if (tipo === "img") {
+                contenedorDinamico.innerHTML = `<img src="${archivo}" alt="${titulo}">`;
+                descripcionVisor.innerText = "Esquema Visual.";
+            } else if (tipo === "codigo") {
+                descripcionVisor.innerText = "Código Fuente (Cargando desde repositorio web...)";
+                fetch(archivo)
+                    .then(r => r.text())
+                    .then(codigo => {
+                        const codigoSeguro = codigo.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                        
+                        // Micro-analizador de tokens integrado para simular PrismJS nativo
+                        let codigoResaltado = codigoSeguro
+                            .replace(/(\/\/.*)/g, '<span class="token comment">$1</span>')
+                            .replace(/\b(public|class|static|void|int|double|float|return|if|else|for|while|new|import|package|private|protected)\b/g, '<span class="token keyword">$1</span>')
+                            .replace(/(["'].*?["'])/g, '<span class="token string">$1</span>')
+                            .replace(/\b(\d+)\b/g, '<span class="token number">$1</span>')
+                            .replace(/\b([A-Z][a-zA-Z0-9_]*)\b/g, '<span class="token class-name">$1</span>');
+
+                        contenedorDinamico.innerHTML = `<pre><code class="language-java">${codigoResaltado}</code></pre>`;
+                    }).catch(() => {
+                        contenedorDinamico.innerHTML = `<pre><code>// Error al cargar vista previa.</code></pre>`;
+                    });
+                
+                btnDescargar.addEventListener("click", (e) => {
+                    if (archivo.startsWith("http")) {
+                        e.preventDefault();
+                        fetch(archivo)
+                            .then(res => res.blob())
+                            .then(blob => {
+                                const urlBlob = window.URL.createObjectURL(blob);
+                                const a = document.createElement("a");
+                                a.href = urlBlob;
+                                a.download = titulo;
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                                window.URL.revokeObjectURL(urlBlob);
+                            });
+                    }
+                });
+            } else {
+                contenedorDinamico.innerHTML = `<p>Archivo ZIP/RAR. Usa el botón inferior.</p>`;
+            }
+
+            function lanzarVisorToast(mensaje) {
+                let container = document.querySelector('.toast-container');
+                if (!container) {
+                    container = document.createElement('div');
+                    container.className = 'toast-container';
+                    document.body.appendChild(container);
+                }
+                const toast = document.createElement('div');
+                toast.className = 'toast-notif';
+                toast.innerHTML = `<span>⚡</span> <span>${mensaje}</span>`;
+                container.appendChild(toast);
+                setTimeout(() => { toast.remove(); }, 3300);
+            }
+
+            // --- COMENTARIOS LOCALES ---
+            const cargarComentarios = () => {
+                const guardados = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+                if (guardados.length === 0) {
+                    listaComentarios.innerHTML = `<p style="color: #9ca3af; font-style: italic;">No hay comentarios aún.</p>`;
+                    return;
+                }
+                listaComentarios.innerHTML = guardados.map(c => `
+                    <div class="comentario-item">
+                        <div class="comentario-autor">${c.autor} <span class="comentario-fecha">${c.fecha}</span></div>
+                        <div class="comentario-texto">${c.texto}</div>
+                    </div>
+                `).join('');
+            };
+
+            formComentario.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const nuevoComentario = {
+                    autor: inputAutor.value.trim(),
+                    texto: textareaComentario.value.trim(),
+                    fecha: new Date().toLocaleDateString('es-MX', { hour: '2-digit', minute: '2-digit' })
+                };
+                const actuales = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+                actuales.push(nuevoComentario);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(actuales));
+                textareaComentario.value = "";
+                cargarComentarios();
+                lanzarVisorToast('💬 ¡Comentario publicado con éxito!');
+            });
+
+            btnDescargar.addEventListener("click", () => {
+                lanzarVisorToast('📥 Procesando descarga del documento...');
+            });
+
+            cargarComentarios();
+        });
+    </script>
+</body>
+</html>

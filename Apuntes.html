@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repositorio - PotroGuias</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="glass-panel">
+        <h1>PotrosGuias</h1>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div class="nav-ss-container">
+                <span class="nav-ss-text">Servicio Social</span>
+                <div class="nav-ss-bg"><div class="nav-ss-fill" id="nav-ss-progreso"></div></div>
+            </div>
+            <a href="subir.html" class="btn-subir">➕ Subir Apunte</a>
+            <a href="index.html">Volver al Inicio</a>
+            <div class="theme-switch-container">
+                <div class="btn-theme theme-potro" onclick="cambiarTemaUaem('potro')" title="Modo Verde Potro"></div>
+                <div class="btn-theme theme-oro" onclick="cambiarTemaUaem('oro')" title="Modo Oro Institucional"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="search-container" style="display: flex; gap: 15px; justify-content: center; max-width: 800px; margin: 40px auto;">
+            <input type="text" id="buscador" placeholder="Busca por materia, tema o autor (Ej. Cálculo, Gerardo, Java)..." style="max-width: 70%; margin-bottom: 0;">
+            <select id="filtro-semestre" class="form-input" style="width: 25%; background: rgba(0,0,0,0.4); border-radius: 30px; padding: 0 20px;">
+                <option value="todos">Todos los semestres</option>
+                <option value="basicas">Ciencias Básicas</option>
+                <option value="programacion">Área Programación</option>
+                <option value="datos">Sistemas Avanzados</option>
+            </select>
+        </div>
+
+        <div class="filtros-container">
+            <button class="btn-filtro activo" data-filtro="todos">Todos los formatos</button>
+            <button class="btn-filtro" data-filtro="lectura">📖 Lectura (Guías/PDFs)</button>
+            <button class="btn-filtro" data-filtro="visual">👁️ Visual (Diagramas/Imágenes)</button>
+            <button class="btn-filtro" data-filtro="codigo">💻 Código (Scripts)</button>
+            <button class="btn-filtro" id="filtro-favoritos" data-filtro="favoritos">⭐ Mis Guardados</button>
+        </div>
+
+        <div class="destacados-container">
+            <h2>🏆 Top Autores Mejor Calificados</h2>
+            <div class="grid-apuntes">
+                
+                <a href="autor.html?nombre=Gerardo%20Caballero" class="link-tarjeta">
+                    <div class="tarjeta-apunte tarjeta-autor glass-panel">
+                        <h3>Gerardo Caballero</h3>
+                        <p><strong>Nivel:</strong> Moderador Experto</p>
+                        <p><strong>Aportes:</strong> Programación y Métodos Numéricos</p>
+                        
+                        <div class="rating-container">
+                            <span class="rating-promedio">⭐ 4.953</span>
+                            <div class="estrellas-interactivas">
+                                <span class="estrella" data-valor="1">★</span>
+                                <span class="estrella" data-valor="2">★</span>
+                                <span class="estrella" data-valor="3">★</span>
+                                <span class="estrella" data-valor="4">★</span>
+                                <span class="estrella" data-valor="5">★</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="autor.html?nombre=Carlos%20Arturo" class="link-tarjeta">
+                    <div class="tarjeta-apunte tarjeta-autor glass-panel">
+                        <h3>Carlos Arturo</h3>
+                        <p><strong>Nivel:</strong> Colaborador Destacado</p>
+                        <p><strong>Aportes:</strong> Cálculo y Guías Teóricas</p>
+                        
+                        <div class="rating-container">
+                            <span class="rating-promedio">⭐ 4.750</span>
+                            <div class="estrellas-interactivas">
+                                <span class="estrella" data-valor="1">★</span>
+                                <span class="estrella" data-valor="2">★</span>
+                                <span class="estrella" data-valor="3">★</span>
+                                <span class="estrella" data-valor="4">★</span>
+                                <span class="estrella" data-valor="5">★</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+        <h2 style="color: #fff; margin-bottom: 20px;">Todos los Apuntes</h2>
+        <div class="grid-apuntes" id="contenedor-apuntes">
+
+            <div class="tarjeta-apunte glass-panel" data-formato="lectura" data-semestre="basicas" data-archivo="documentos/formulario.completo.electromagnetismo.pdf" data-titulo="Formulario Completo de Electromagnetismo">
+                <div class="badge-formato badge-lectura">Lectura</div>
+                <img src="img/formulario.jpg" alt="Física">
+                <h3>Formulario Completo de Electromagnetismo</h3>
+                <p><strong>Autor:</strong> Jaziel</p>
+                <span class="tag-materia">Física</span>
+                
+                <div class="rating-container">
+                    <span class="rating-promedio">⭐ 4.833</span>
+                    <div class="estrellas-interactivas">
+                        <span class="estrella" data-valor="1">★</span>
+                        <span class="estrella" data-valor="2">★</span>
+                        <span class="estrella" data-valor="3">★</span>
+                        <span class="estrella" data-valor="4">★</span>
+                        <span class="estrella" data-valor="5">★</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px; width: 100%;">
+                    <button class="btn-ver" style="flex: 1; padding: 8px; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">👁️ Ver</button>
+                    <button class="btn-descargar" style="flex: 1; padding: 8px; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">📥 Descargar</button>
+                </div>
+            </div>
+
+            <div class="tarjeta-apunte glass-panel" data-formato="lectura" data-semestre="basicas" data-archivo="documentos/Grafos.pdf" data-titulo="Apuntes Teóricos: Grafos y Árboles">
+                <div class="badge-formato badge-lectura">Lectura</div>
+                <img src="img/grafos.jpg" alt="Matemáticas Discretas">
+                <h3>Apuntes Teóricos: Grafos y Árboles</h3>
+                <p><strong>Autor:</strong> Gerardo Caballero</p>
+                <span class="tag-materia">Matemáticas Discretas</span>
+                
+                <div class="rating-container">
+                    <span class="rating-promedio">⭐ 4.714</span>
+                    <div class="estrellas-interactivas">
+                        <span class="estrella" data-valor="1">★</span>
+                        <span class="estrella" data-valor="2">★</span>
+                        <span class="estrella" data-valor="3">★</span>
+                        <span class="estrella" data-valor="4">★</span>
+                        <span class="estrella" data-valor="5">★</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px; width: 100%;">
+                    <button class="btn-ver" style="flex: 1; padding: 8px; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">👁️ Ver</button>
+                    <button class="btn-descargar" style="flex: 1; padding: 8px; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">📥 Descargar</button>
+                </div>
+            </div>
+
+            <div class="tarjeta-apunte glass-panel" data-formato="visual" data-semestre="datos" data-archivo="img/nor.info.jpg" data-titulo="Infografía: Proceso de Normalización">
+                <div class="badge-formato badge-visual">Visual</div>
+                <img src="img/normalizacion.jpg" alt="Bases de Datos">
+                <h3>Infografía: Proceso de Normalización (1FN a 3FN)</h3>
+                <p><strong>Autor:</strong> Jonathan</p>
+                <span class="tag-materia">Bases de Datos</span>
+                
+                <div class="rating-container">
+                    <span class="rating-promedio">⭐ 4.921</span>
+                    <div class="estrellas-interactivas">
+                        <span class="estrella" data-valor="1">★</span>
+                        <span class="estrella" data-valor="2">★</span>
+                        <span class="estrella" data-valor="3">★</span>
+                        <span class="estrella" data-valor="4">★</span>
+                        <span class="estrella" data-valor="5">★</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px; width: 100%;">
+                    <button class="btn-ver" style="flex: 1; padding: 8px; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">👁️ Ver</button>
+                    <button class="btn-descargar" style="flex: 1; padding: 8px; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">📥 Descargar</button>
+                </div>
+            </div>
+
+            <div class="tarjeta-apunte glass-panel" data-formato="visual" data-semestre="basicas" data-archivo="img/info.jpg" data-titulo="Esquema de Integrales de Línea">
+                <div class="badge-formato badge-visual">Visual</div>
+                <img src="img/integral.jpg" alt="Cálculo">
+                <h3>Esquema de Integrales de Línea</h3>
+                <p><strong>Autor:</strong> Carlos Arturo</p>
+                <span class="tag-materia">Cálculo Vectorial</span>
+                
+                <div class="rating-container">
+                    <span class="rating-promedio">⭐ 4.605</span>
+                    <div class="estrellas-interactivas">
+                        <span class="estrella" data-valor="1">★</span>
+                        <span class="estrella" data-valor="2">★</span>
+                        <span class="estrella" data-valor="3">★</span>
+                        <span class="estrella" data-valor="4">★</span>
+                        <span class="estrella" data-valor="5">★</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px; width: 100%;">
+                    <button class="btn-ver" style="flex: 1; padding: 8px; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">👁️ Ver</button>
+                    <button class="btn-descargar" style="flex: 1; padding: 8px; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">📥 Descargar</button>
+                </div>
+            </div>
+
+            <div class="tarjeta-apunte glass-panel" data-formato="codigo" data-semestre="programacion" data-archivo="https://raw.githubusercontent.com/TheAlgorithms/Java/master/src/main/java/com/thealgorithms/maths/FindMin.java" data-titulo="Algoritmo de Raíces (Java)">
+                <div class="badge-formato badge-codigo">Código</div>
+                <img src="img/falsa.jpg" alt="Código Java">
+                <h3>Algoritmo de Regula Falsi para Raíces (Java)</h3>
+                <p><strong>Autor:</strong> Gerardo Caballero</p>
+                <span class="tag-materia">Métodos Numéricos</span>
+                
+                <div class="rating-container">
+                    <span class="rating-promedio">⭐ 4.888</span>
+                    <div class="estrellas-interactivas">
+                        <span class="estrella" data-valor="1">★</span>
+                        <span class="estrella" data-valor="2">★</span>
+                        <span class="estrella" data-valor="3">★</span>
+                        <span class="estrella" data-valor="4">★</span>
+                        <span class="estrella" data-valor="5">★</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px; width: 100%;">
+                    <button class="btn-ver" style="flex: 1; padding: 8px; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">👁️ Ver</button>
+                    <button class="btn-descargar" style="flex: 1; padding: 8px; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">📥 Descargar</button>
+                </div>
+            </div>
+
+            <div class="tarjeta-apunte glass-panel" data-formato="codigo" data-semestre="programacion" data-archivo="https://raw.githubusercontent.com/TheAlgorithms/Java/master/src/main/java/com/thealgorithms/maths/FindMin.java" data-titulo="Proyecto Web Completo">
+                <div class="badge-formato badge-codigo">Código</div>
+                <img src="img/Maqueta.jpg" alt="Desarrollo Web">
+                <h3>Maquetación Web completa con HTML, CSS y JS</h3>
+                <p><strong>Autor:</strong> Jaziel</p>
+                <span class="tag-materia">Programación Web</span>
+                
+                <div class="rating-container">
+                    <span class="rating-promedio">⭐ 4.750</span>
+                    <div class="estrellas-interactivas">
+                        <span class="estrella" data-valor="1">★</span>
+                        <span class="estrella" data-valor="2">★</span>
+                        <span class="estrella" data-valor="3">★</span>
+                        <span class="estrella" data-valor="4">★</span>
+                        <span class="estrella" data-valor="5">★</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px; width: 100%;">
+                    <button class="btn-ver" style="flex: 1; padding: 8px; background: #3b82f6; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">👁️ Ver</button>
+                    <button class="btn-descargar" style="flex: 1; padding: 8px; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">📥 Descargar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="Apuntes.js"></script>
+</body>
+</html>
