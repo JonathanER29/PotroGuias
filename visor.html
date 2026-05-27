@@ -91,19 +91,20 @@
             else if (urlLower.includes(".java") || urlLower.includes(".cs") || urlLower.includes(".js") || urlLower.includes(".html")) tipo = "codigo";
 
             if (tipo === "pdf") {
-    // 1. Convertimos la ruta relativa a una URL absoluta (Google Viewer la necesita para ubicar el archivo)
-    const rutaAbsoluta = new URL(archivo, window.location.href).href;
-    
-    // 2. Pasamos la URL absoluta a través del visor de Google Docs
-    const urlGoogleViewer = `https://docs.google.com/gview?url=${encodeURIComponent(rutaAbsoluta)}&embedded=true`;
-    
-    // 3. Inyectamos el iframe modificado
-    contenedorDinamico.innerHTML = `<iframe src="${urlGoogleViewer}" style="width: 100%; height: 75vh; border: none; border-radius: 8px;"></iframe>`;
-    descripcionVisor.innerText = "Documento PDF (Optimizado para móviles).";
-}
+                // 1. Obtenemos la ruta absoluta del PDF alojado en GitHub Pages
+                const rutaAbsoluta = new URL(archivo, window.location.href).href;
+                
+                // 2. Usamos el visor público Open Source de Mozilla PDF.js (Brave NO lo bloquea)
+                const urlVisor = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(rutaAbsoluta)}`;
+                
+                // 3. Inyectamos el iframe con fondo oscuro para que haga contraste
+                contenedorDinamico.innerHTML = `<iframe src="${urlVisor}" style="width: 100%; height: 75vh; border: none; border-radius: 8px; background-color: #1f2937;"></iframe>`;
+                descripcionVisor.innerText = "Documento PDF (Visor Universal).";
+
             } else if (tipo === "img") {
                 contenedorDinamico.innerHTML = `<img src="${archivo}" alt="${titulo}">`;
                 descripcionVisor.innerText = "Esquema Visual.";
+
             } else if (tipo === "codigo") {
                 descripcionVisor.innerText = "Código Fuente (Cargando desde repositorio web...)";
                 fetch(archivo)
